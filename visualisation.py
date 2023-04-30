@@ -13,6 +13,7 @@ IMAGE_SIZE = (640, 480)
 def app():
     # Set the page title
     st.set_page_config(page_title="Homography visualisation", layout="wide", initial_sidebar_state="expanded")
+    st.title("Homography Visualisation")
 
     col1, col2 = st.columns(2)
     with col1:
