@@ -48,17 +48,15 @@ def app():
 
     # Create three sidebars for the position values
     with st.sidebar:
-        cam_x = st.slider(label = "Camera X Position", min_value = -3.0,max_value=  3.0, value= 0.0,step= 0.1, key="cam_x")
-    with st.sidebar:
-        cam_y = st.slider(label = "Camera Y Position", min_value = -3.0,max_value=  3.0, value= 0.0,step= 0.1, key="cam_y")
-    with st.sidebar:
-        cam_z = st.slider(label = "Camera Z Position", min_value = -3.0,max_value=  3.0, value= 0.0,step= 0.1, key="cam_z")
-    with st.sidebar:
-        cam_pitch = st.slider(label = "Camera Pitch", min_value = -180,max_value=  180, value= -90,step= 1, key="cam_pitch")
-    with st.sidebar:
-        cam_roll = st.slider(label = "Camera Roll", min_value = -180,max_value=  180, value= 0,step= 1, key="cam_roll")
-    with st.sidebar:
-        cam_yaw = st.slider(label = "Camera Yaw", min_value = -180,max_value=  180, value= 0,step= 1, key="cam_yaw")
+        col1, col2 = st.columns(2)
+        with col1:
+            cam_x = st.slider(label = "Camera X Position", min_value = -3.0,max_value=  3.0, value= 0.0,step= 0.1, key="cam_x")
+            cam_y = st.slider(label = "Camera Y Position", min_value = -3.0,max_value=  3.0, value= 0.0,step= 0.1, key="cam_y")
+            cam_z = st.slider(label = "Camera Z Position", min_value = -3.0,max_value=  3.0, value= 0.0,step= 0.1, key="cam_z")
+        with col2:
+            cam_pitch = st.slider(label = "Camera Pitch", min_value = -180,max_value=  180, value= -90,step= 1, key="cam_pitch")
+            cam_roll = st.slider(label = "Camera Roll", min_value = -180,max_value=  180, value= 0,step= 1, key="cam_roll")
+            cam_yaw = st.slider(label = "Camera Yaw", min_value = -180,max_value=  180, value= 0,step= 1, key="cam_yaw")
     
     ######################## CAMERA ###############################  
     cam2world = pt.transform_from(R=pr.active_matrix_from_intrinsic_euler_xyz(e=[np.deg2rad(cam_pitch),
