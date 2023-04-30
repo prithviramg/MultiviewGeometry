@@ -13,8 +13,6 @@ IMAGE_SIZE = (640, 480)
 def app():
     # Set the page title
     st.set_page_config(page_title="Homography visualisation", layout="wide", initial_sidebar_state="expanded")
-    st.subheader("Homography visualisation")
-
     col1, col2 = st.columns(2)
     with col1:
         azimuth = st.slider("Azimuth", -180, 180, -35, 1)
@@ -47,7 +45,9 @@ def app():
     pt.plot_transform(ax1, A2B = pt.transform_from(R=pr.active_matrix_from_intrinsic_euler_xyz(e=[0,0,0]), p = [2.8,-2.8,-2.8]),
                   s = 1, name="world")
 
-    # Create three sidebars for the position values
+    ######################## CAMERA ###############################  
+    with st.sidebar:
+        st.subheader('CameraExtrinsic')
     with st.sidebar:
         col1, col2 = st.columns(2)
         with col1:
@@ -58,28 +58,39 @@ def app():
             cam_pitch = st.slider(label = "Camera Pitch", min_value = -180,max_value=  180, value= -90,step= 1, key="cam_pitch")
             cam_roll = st.slider(label = "Camera Roll", min_value = -180,max_value=  180, value= 0,step= 1, key="cam_roll")
             cam_yaw = st.slider(label = "Camera Yaw", min_value = -180,max_value=  180, value= 0,step= 1, key="cam_yaw")
+    with st.sidebar:
+        st.subheader('CameraIntrisic')
+    with st.sidebar:
+        col1, col2 = st.columns(2)
+        with col1:
+            img_width = st.slider(label = "Image Width", min_value = 640, max_value=  1024, value= 640, key="img_width")
+            img_height = st.slider(label = "Image Height", min_value = 480,max_value=  1024, value= 480, key="img_height")
+            focal_length = st.slider(label = "focal length", min_value = 0.05,max_value=  3.0, value= 0.08,step= 0.05, key="focal_length")
+        with col2:
+            sensor_width = st.slider(label = "sensor width", min_value = 0.036,max_value=  0.1, value= 0.036,step= 0.001, key="sensor_width")
+            sensor_height = st.slider(label = "sensor height", min_value = 0.024,max_value=  0.1, value= 0.024,step= 0.001, key="sensor_height")
+            virtual_image_distance = st.slider(label = "virtual image distance", min_value = 0.5,max_value= 2.0, value= 0.5,step= 0.1, 
+                                                key="virtual_image_distance")
     
-    ######################## CAMERA ###############################  
     cam2world = pt.transform_from(R=pr.active_matrix_from_intrinsic_euler_xyz(e=[np.deg2rad(cam_pitch),
-                                                                                 np.deg2rad(cam_roll),
-                                                                                 np.deg2rad(cam_yaw)]), 
+                                                                                 np.deg2rad(cam_yaw),
+                                                                                 np.deg2rad(cam_roll)]), 
                                   p = [cam_x,cam_y,cam_z])
     sensor_size = np.array([0.036, 0.024])
-    image_size = IMAGE_SIZE
-    focus_length = 0.08
+    image_size = (st.session_state.img_width, st.session_state.img_height)
     intrinsic_matrix = np.array([
-        [focus_length,            0, sensor_size[0] / 2.0],
-        [0,            focus_length, sensor_size[1] / 2.0],
-        [0,                       0,                    1]
+        [st.session_state.focal_length,                             0, st.session_state.sensor_width / 2.0],
+        [0,                             st.session_state.focal_length, st.session_state.sensor_height / 2.0],
+        [0,                                                         0,                                    1]
     ])
     pt.plot_transform(ax1, A2B=cam2world, s=0.3, name="Camera")
     pc.plot_camera(
         ax1, cam2world=cam2world, M=intrinsic_matrix, sensor_size=sensor_size,
-        virtual_image_distance=0.5)
+        virtual_image_distance=st.session_state.virtual_image_distance)
     
     ######################## IMAGE ###############################
     image_grid = pc.world2image(world_grid, cam2world, sensor_size, image_size,
-                            focus_length, kappa=0)
+                                st.session_state.focal_length, kappa=0)
     ax2.scatter(image_grid[:, 0], -(image_grid[:, 1] - image_size[1]), c = colors)
     ax2.scatter(image_grid[-1, 0], -(image_grid[-1, 1] - image_size[1]), color="r")
     ax2.set_xlabel("X axis")
@@ -89,7 +100,6 @@ def app():
 
     # Show the plot in Streamlit
     st.pyplot(fig)
-
 
 # Run the Streamlit app
 if __name__ == "__main__":
