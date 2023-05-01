@@ -67,8 +67,8 @@ def app():
             img_height = st.slider(label = "Image Height", min_value = 480,max_value=  1024, value= 480, key="img_height")
             focal_length = st.slider(label = "focal length", min_value = 0.05,max_value=  3.0, value= 0.08,step= 0.05, key="focal_length")
         with col2:
-            sensor_width = st.slider(label = "sensor width", min_value = 0.036,max_value=  0.1, value= 0.036,step= 0.001, key="sensor_width")
-            sensor_height = st.slider(label = "sensor height", min_value = 0.024,max_value=  0.1, value= 0.024,step= 0.001, key="sensor_height")
+            sensor_width = st.slider(label = "sensor width", min_value = 0.01,max_value=  0.1, value= 0.03,step= 0.01, key="sensor_width")
+            sensor_height = st.slider(label = "sensor height", min_value = 0.01,max_value=  0.1, value= 0.02,step= 0.01, key="sensor_height")
             virtual_image_distance = st.slider(label = "virtual image distance", min_value = 0.5,max_value= 2.0, value= 0.5,step= 0.1, 
                                                 key="virtual_image_distance")
     
@@ -76,7 +76,7 @@ def app():
                                                                                  np.deg2rad(cam_yaw),
                                                                                  np.deg2rad(cam_roll)]), 
                                   p = [cam_x,cam_y,cam_z])
-    sensor_size = np.array([0.036, 0.024])
+    sensor_size = np.array([st.session_state.sensor_width, st.session_state.sensor_height])
     image_size = (st.session_state.img_width, st.session_state.img_height)
     intrinsic_matrix = np.array([
         [st.session_state.focal_length,                             0, st.session_state.sensor_width / 2.0],
