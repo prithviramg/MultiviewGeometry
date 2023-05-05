@@ -12,7 +12,7 @@ IMAGE_SIZE = (640, 480)
 # Define the Streamlit app
 def app():
     # Set the page title
-    st.set_page_config(page_title="Homography visualisation", layout="wide", initial_sidebar_state="expanded")
+    st.set_page_config(page_title="Camera Parameters Visualisation", layout="wide", initial_sidebar_state="expanded")
     col1, col2 = st.columns(2)
     with col1:
         azimuth = st.slider("Azimuth", -180, 180, -35, 1)
