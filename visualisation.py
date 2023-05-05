@@ -93,6 +93,8 @@ def app():
                                 st.session_state.focal_length, kappa=0)
     ax2.scatter(image_grid[:, 0], -(image_grid[:, 1] - image_size[1]), c = colors)
     ax2.scatter(image_grid[-1, 0], -(image_grid[-1, 1] - image_size[1]), color="r")
+    ax2.set_xlim(0, st.session_state.img_width)
+    ax2.set_ylim(0,st.session_state.img_height)
     ax2.set_xlabel("X axis")
     ax2.set_ylabel("Y axis")
     ax2.yaxis.set_label_position("right")
