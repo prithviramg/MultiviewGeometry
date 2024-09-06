@@ -34,8 +34,8 @@ def app():
     ax1.scatter(
     world_grid[:, 0], world_grid[:, 1], world_grid[:, 2], s=0.2, alpha=1, color=colors)
     ax1.scatter(world_grid[-1, 0], world_grid[-1, 1], world_grid[-1, 2], color="r")
-    ax1.set_xlabel("X axis")
-    ax1.set_ylabel("Y axis")
+    ax1.set_xlabel("Y axis")
+    ax1.set_ylabel("X axis")
     ax1.set_zlabel("Z axis")
     ax1.set_xlim((-3,3))
     ax1.set_ylim((-3,3))
@@ -51,9 +51,9 @@ def app():
     with st.sidebar:
         col1, col2 = st.columns(2)
         with col1:
-            cam_x = st.slider(label = "Camera X Position", min_value = -3.0,max_value=  3.0, value= 0.0,step= 0.1, key="cam_x")
-            cam_y = st.slider(label = "Camera Y Position", min_value = -3.0,max_value=  3.0, value= 0.0,step= 0.1, key="cam_y")
-            cam_z = st.slider(label = "Camera Z Position", min_value = -3.0,max_value=  3.0, value= 0.0,step= 0.1, key="cam_z")
+            cam_y = st.slider(label = "Camera X Position", min_value = -6.0,max_value=  6.0, value= 0.0,step= 0.1, key="cam_y")
+            cam_x = st.slider(label = "Camera Y Position", min_value = -6.0,max_value=  6.0, value= 0.0,step= 0.1, key="cam_x")
+            cam_z = st.slider(label = "Camera Z Position", min_value = -6.0,max_value=  6.0, value= 0.0,step= 0.1, key="cam_z")
         with col2:
             cam_pitch = st.slider(label = "Camera Pitch", min_value = -180,max_value=  180, value= -90,step= 1, key="cam_pitch")
             cam_roll = st.slider(label = "Camera Roll", min_value = -180,max_value=  180, value= 0,step= 1, key="cam_roll")
@@ -102,6 +102,40 @@ def app():
 
     # Show the plot in Streamlit
     st.pyplot(fig)
+    col1, col2, col3 = st.columns(3)
+    with col2:
+        st.latex(r'''
+                    \underbrace{
+                        \begin{pmatrix}''' +\
+                        rf'''{round(cam2world[0,0],4)}''' + rf'''& {round(cam2world[0,1],4)}''' + rf'''& {round(cam2world[0,2],4)}''' + rf'''& {round(cam2world[0,3],4)}''' + r'''\\'''
+                        rf'''{round(cam2world[1,0],4)}''' + rf'''& {round(cam2world[1,1],4)}''' + rf'''& {round(cam2world[1,2],4)}''' + rf'''& {round(cam2world[1,3],4)}''' + r'''\\'''
+                        rf'''{round(cam2world[2,0],4)}''' + rf'''& {round(cam2world[2,1],4)}''' + rf'''& {round(cam2world[2,2],4)}''' + rf'''& {round(cam2world[2,3],4)}''' + r'''\\
+                        \end{pmatrix}
+                    }_\text{Extrinsic Matrix}
+                ''')
+        print()
+    with col1:
+        st.latex(r'''
+                    \underbrace{
+                        \begin{pmatrix}''' +\
+                        rf'''{st.session_state.focal_length}''' + r''' & 0 ''' + rf''' & {st.session_state.sensor_width / 2.0}''' + r''' \\
+                        0''' + rf'''& {st.session_state.focal_length}''' + rf''' & {st.session_state.sensor_height / 2.0}''' + r''' \\
+                        0  & 0  & 1   
+                        \end{pmatrix}
+                    }_\text{Intrinsic Matrix}
+                ''')
+    with col3:
+        calibMatrix = np.matmul(intrinsic_matrix, cam2world[:3,:])
+        # st.write(cam2world[:3,:])
+        st.latex(r'''
+                    \underbrace{
+                        \begin{pmatrix}''' +\
+                        rf'''{round(calibMatrix[0,0],4)}''' + rf'''& {round(cam2world[0,1],4)}''' + rf'''& {round(cam2world[0,2],4)}''' + rf'''& {round(cam2world[0,3],4)}''' + r'''\\'''
+                        rf'''{round(cam2world[1,0],4)}''' + rf'''& {round(cam2world[1,1],4)}''' + rf'''& {round(cam2world[1,2],4)}''' + rf'''& {round(cam2world[1,3],4)}''' + r'''\\'''
+                        rf'''{round(cam2world[2,0],4)}''' + rf'''& {round(cam2world[2,1],4)}''' + rf'''& {round(cam2world[2,2],4)}''' + rf'''& {round(cam2world[2,3],4)}''' + r'''\\
+                        \end{pmatrix}
+                    }_\text{Calibration Matrix}
+                ''')
 
 # Run the Streamlit app
 if __name__ == "__main__":

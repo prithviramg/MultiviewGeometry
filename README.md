@@ -1,2 +1,9 @@
-# MultiviewGeometry
-this repo helps to visualize the lot camera related geometry
+# MutliView-Geometry
+Multi Camera visualization tool
+
+![sample video](resources/camera-visu-tool.gif)
+
+to run this python script
+```
+streamlit run src\visualisation.py
+```
